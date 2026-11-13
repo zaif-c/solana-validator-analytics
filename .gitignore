@@ -1,0 +1,17 @@
+# Data: cached pulls and derived outputs stay local
+data/**
+!data/*/
+!data/*/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# Credentials
+*.json.key
+service-account*.json
+
+.DS_Store

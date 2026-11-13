@@ -1,0 +1,20 @@
+{
+  "_source": "Outputs saved in notebooks/archive/Solana_Validator_Analysis.ipynb (Colab run, original query).",
+  "raw_rows": 9346,
+  "unique_validators": 8577,
+  "dropped_invalid_commission": 1,
+  "complete_rows_pre_impute": 3484,
+  "rows_out": 8576,
+  "explained_variance_ratio": [0.395647, 0.202149, 0.137844, 0.118623, 0.078588, 0.059138, 0.008012],
+  "cumulative_variance_kept": 0.854263,
+  "silhouette_approx": 0.77,
+  "cluster_sizes_sorted": [35, 348, 1083, 1625, 2106, 3379],
+  "cluster_median_profiles_by_size": {
+    "3379": {"commission": 100.0, "median_efficiency_pct": 0.0, "num_epochs_recorded": 1.0, "has_history": 0.0},
+    "2106": {"commission": 10.0, "median_efficiency_pct": 5.984, "num_epochs_recorded": 64.0, "has_history": 1.0},
+    "1625": {"commission": 5.0, "median_efficiency_pct": 0.0, "num_epochs_recorded": 1.0, "has_history": 0.0},
+    "1083": {"commission": 100.0, "median_efficiency_pct": 5.427, "num_epochs_recorded": 64.0, "has_history": 1.0},
+    "348": {"commission": 10.0, "median_efficiency_pct": 3.068, "num_epochs_recorded": 3.0, "has_history": 1.0},
+    "35": {"commission": 0.0, "median_efficiency_pct": 99.511, "num_epochs_recorded": 14.0, "has_history": 1.0}
+  }
+}
