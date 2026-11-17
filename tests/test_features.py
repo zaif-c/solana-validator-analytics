@@ -121,13 +121,13 @@ def test_roundtrip_and_pipeline(tmp_path, monkeypatch):
     assert stats["dropped_missing_timestamps"] == 1
     assert stats["unique_validators"] == 301            # 300 + "bad"
     assert stats["dropped_invalid_commission"] == 1
-    assert len(feats) == 300 and feats["pubkey"].is_unique
+    assert len(feats) == 300 - stats["dropped_inactive"] and feats["pubkey"].is_unique
     assert not feats[config.FEATURES].isna().any().any()
     assert feats["median_efficiency_pct_raw"].max() <= 100
 
     clusters, metrics = model.fit(feats)
     assert clusters["cluster"].nunique() == config.N_CLUSTERS
-    assert sum(metrics["cluster_sizes"].values()) == 300
+    assert sum(metrics["cluster_sizes"].values()) == len(feats)
 
 
 def test_checks_report(tmp_path, monkeypatch):
@@ -165,3 +165,12 @@ def test_placeholder_not_counted_as_epoch():
     v2 = features.engineer(df, V2)
     assert v2["num_epochs_recorded"].tolist() == [0, 1, 2]
     assert features.engineer(df, COLAB)["num_epochs_recorded"].tolist() == [1, 1, 2]
+
+
+def test_inactive_excluded_in_v2():
+    raw = synthetic_raw()
+    feats, stats = features.build_features(raw, V2)
+    assert stats["dropped_inactive"] > 0
+    assert (feats["num_epochs_recorded"] > 0).all()
+    _, legacy = features.build_features(raw, COLAB)
+    assert "dropped_inactive" not in legacy

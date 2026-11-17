@@ -90,6 +90,9 @@ PROFILES = {
         # Count only real epoch records; no-history accounts carry one all-null
         # placeholder {credits: None, epoch: None, previous_credits: None}.
         "count_real_epochs_only": True,
+        # Exclude validators that never earned a vote credit (0 real epoch
+        # records). Overlaps ~99.9% with "last vote slot == 0" (never voted).
+        "exclude_inactive": True,
     },
     "colab": {
         "dedup_key": "node_pubkey",
@@ -99,6 +102,7 @@ PROFILES = {
         "era_aware_efficiency": False,
         "drop_invalid_epoch_records": False,
         "count_real_epochs_only": False,
+        "exclude_inactive": False,
     },
 }
 

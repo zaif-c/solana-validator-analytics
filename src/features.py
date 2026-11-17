@@ -8,7 +8,7 @@ Cleaning behaviour comes from the active profile in config.PROFILES:
   v2 (default) : dedup on vote account `pubkey`, latest by block_slot, rows
                  without timestamps dropped, era-aware efficiency (TVC),
                  out-of-range epoch records dropped, null placeholders not
-                 counted as epochs.
+                 counted as epochs, inactive (never-credited) validators dropped.
   colab        : reproduces the original notebook (cells 7, 27-42).
 """
 
@@ -148,6 +148,11 @@ def drop_invalid(v: pd.DataFrame) -> pd.DataFrame:
     return v[v["commission"] <= config.MAX_COMMISSION].copy()
 
 
+def drop_inactive(v: pd.DataFrame) -> pd.DataFrame:
+    """Drop validators that never earned a vote credit (no real epoch records)."""
+    return v[v["num_epochs_recorded"] > 0].copy()
+
+
 def impute(v: pd.DataFrame) -> pd.DataFrame:
     v = v.copy()
     v["has_history"] = (v["num_epochs_recorded"] > 1).astype(int)
@@ -193,6 +198,10 @@ def build_features(raw: pd.DataFrame, settings: dict | None = None) -> tuple[pd.
     n_before = len(v)
     v = drop_invalid(v)
     stats["dropped_invalid_commission"] = n_before - len(v)
+    if s.get("exclude_inactive"):
+        n_before = len(v)
+        v = drop_inactive(v)
+        stats["dropped_inactive"] = n_before - len(v)
     stats["complete_rows_pre_impute"] = int(v[PRE_IMPUTE_FEATURES].dropna().shape[0])
     v = impute(v)
     stats["rows_out"] = len(v)

@@ -28,6 +28,9 @@ If a stage's output already exists, that stage is skipped. Constants such as the
 | "Latest" row | max `block_slot` (stable sort) | max `retrieval_timestamp` (rows with no timestamp sort last and win) |
 | Rows missing `block_timestamp` / `retrieval_timestamp` | dropped | kept |
 | Efficiency denominator | 432,000 before epoch 703 (timely vote credits went live), 6,912,000 from 703 on | 6,912,000 for every epoch |
+| Epoch records with a gain below 0 or above the era maximum | dropped | kept |
+| Null placeholder epoch records | counted as 0 epochs | counted as 1 epoch |
+| Inactive validators (never earned a vote credit) | excluded before imputation and clustering | kept |
 
 Choose a profile with `SVA_PROFILE`. Give each profile its own `SVA_DATA_DIR`, because stages skip themselves when their outputs already exist.
 
