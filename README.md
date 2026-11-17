@@ -1,6 +1,27 @@
-# Learning Validator Archetypes from On-Chain Solana Data
+# Learning Validator Archetypes from On-Chain Solana Data — v2
+
+> **This is the `v2` branch, an archived version.** The project has three versions, each on its own branch:
+>
+> | Branch | Version |
+> |---|---|
+> | [`v1`](https://github.com/zaif-c/solana-validator-analytics/tree/v1) | The original PSTAT 135 course project: a single Colab notebook run on GCP, plus the final paper. |
+> | **`v2`** (this branch) | v1 ported to a local, staged, re-runnable pipeline, with a corrected data-cleaning method. The results differ from v1, and this branch has no paper. |
+> | [`v3`](https://github.com/zaif-c/solana-validator-analytics/tree/v3) | A rebuild from scratch on a new data source. This is the current version and will become `main`. |
 
 This project clusters Solana validators into behavioral archetypes using public vote-account data. It started as a UCSB PSTAT 135 course project and now continues as a FinTech Labs research thread.
+
+### What changed from v1
+
+- **Pipeline:** v1's single notebook is split into cached stages (extract → checks → features → model). The notebooks read only those cached files.
+- **Validator identity:** validators are deduplicated by vote account (`pubkey`) instead of `node_pubkey`. The latest row is chosen by `block_slot` with a deterministic sort.
+- **Timestamps:** the 233 rows with no timestamp are dropped. All of them are from 2020.
+- **Efficiency:** each epoch is scored against the maximum credits possible in its era. Before epoch 703, when timely vote credits went live, that maximum is 432,000; from 703 on it is 6,912,000. v1 used 6,912,000 for every epoch, which made pre-703 efficiency look like about 6%.
+- **Bad and empty records:** epoch records with impossible values are dropped, and empty placeholder records no longer count as epochs.
+- **Inactive validators:** validators that never earned a vote credit (4,859 of 9,018) are left out before clustering.
+- **Reproducing v1:** the `colab` profile keeps v1's exact logic so the port can be checked against v1's numbers (see [Cleaning profiles](#cleaning-profiles)).
+
+**v2 results** (snapshot pulled 2026-11): 4,159 active validators, k=6, 4 PCs explaining 88.0% of variance, silhouette 0.567.
+- **Known limitation:** each validator is described by its latest snapshot, and most of those are from 2021–2023.
 
 ## Pipeline
 
